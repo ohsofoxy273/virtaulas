@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
             title: Text(provider.title),
             centerTitle: true,
           ),
-          body: provider.pages[provider.currentIndex],
+          body: provider.currentIndex == 0 ? HomePage() : SettingsPage(),
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: provider.currentIndex,
             onTap: (index) {
@@ -47,6 +47,8 @@ class MyApp extends StatelessWidget {
 
 class BottomNavBarProvider with ChangeNotifier {
   int _currentIndex = 0;
+  String _nativeLanguage = 'English';
+  String _learningLanguage = 'Spanish';
 
   final List<Widget> _pages = [
     HomePage(),
@@ -63,17 +65,105 @@ class BottomNavBarProvider with ChangeNotifier {
   }
 
   String get title => _currentIndex == 0 ? 'Home' : 'Settings';
+
+  String get nativeLanguage => _nativeLanguage;
+
+  set nativeLanguage(String language) {
+    _nativeLanguage = language;
+    notifyListeners();
+  }
+
+  String get learningLanguage => _learningLanguage;
+
+  set learningLanguage(String language) {
+    _learningLanguage = language;
+    notifyListeners();
+  }
 }
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Home',
-        style: TextStyle(fontSize: 30),
-      ),
-    );
+    return Container(
+        margin: EdgeInsets.only(top: 20),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text('My native language',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      DropdownButton<String>(
+                        value: Provider.of<BottomNavBarProvider>(context)
+                            .nativeLanguage,
+                        onChanged: (newValue) {
+                          Provider.of<BottomNavBarProvider>(context,
+                                  listen: false)
+                              .nativeLanguage = newValue!;
+                        },
+                        items: [
+                          DropdownMenuItem(
+                            value: 'English',
+                            child: Text('English'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Spanish',
+                            child: Text('Spanish'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'European Portuguese',
+                            child: Text('European Portuguese'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text('My learning language',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      DropdownButton<String>(
+                        value: Provider.of<BottomNavBarProvider>(context)
+                            .learningLanguage,
+                        onChanged: (newValue) {
+                          Provider.of<BottomNavBarProvider>(context,
+                                  listen: false)
+                              .learningLanguage = newValue!;
+                        },
+                        items: [
+                          DropdownMenuItem(
+                            value: 'English',
+                            child: Text('English'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Spanish',
+                            child: Text('Spanish'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'European Portuguese',
+                            child: Text('European Portuguese'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
+                  'Home',
+                  style: TextStyle(fontSize: 30),
+                ),
+              ),
+            ),
+          ],
+        ));
   }
 }
 
